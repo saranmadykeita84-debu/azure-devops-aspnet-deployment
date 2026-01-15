@@ -1,0 +1,129 @@
+﻿{
+    "$schema":  "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion":  "1.0.0.0",
+    "parameters":  {
+                       "location":  {
+                                        "value":  "canadacentral"
+                                    },
+                       "networkInterfaceName1":  {
+                                                     "value":  "keitavm373_z1"
+                                                 },
+                       "enableAcceleratedNetworking":  {
+                                                           "value":  true
+                                                       },
+                       "networkSecurityGroupName":  {
+                                                        "value":  "Keitavm-nsg"
+                                                    },
+                       "networkSecurityGroupRules":  {
+                                                         "value":  [
+                                                                       {
+                                                                           "name":  "RDP",
+                                                                           "properties":  {
+                                                                                              "priority":  300,
+                                                                                              "protocol":  "TCP",
+                                                                                              "access":  "Allow",
+                                                                                              "direction":  "Inbound",
+                                                                                              "sourceAddressPrefix":  "*",
+                                                                                              "sourcePortRange":  "*",
+                                                                                              "destinationAddressPrefix":  "*",
+                                                                                              "destinationPortRange":  "3389"
+                                                                                          }
+                                                                       },
+                                                                       {
+                                                                           "name":  "HTTP",
+                                                                           "properties":  {
+                                                                                              "priority":  320,
+                                                                                              "protocol":  "TCP",
+                                                                                              "access":  "Allow",
+                                                                                              "direction":  "Inbound",
+                                                                                              "sourceAddressPrefix":  "*",
+                                                                                              "sourcePortRange":  "*",
+                                                                                              "destinationAddressPrefix":  "*",
+                                                                                              "destinationPortRange":  "80"
+                                                                                          }
+                                                                       }
+                                                                   ]
+                                                     },
+                       "subnetName":  {
+                                          "value":  "default"
+                                      },
+                       "virtualNetworkName":  {
+                                                  "value":  "Keitavm-vnet"
+                                              },
+                       "addressPrefixes":  {
+                                               "value":  [
+                                                             "10.0.0.0/16"
+                                                         ]
+                                           },
+                       "subnets":  {
+                                       "value":  [
+                                                     {
+                                                         "name":  "default",
+                                                         "properties":  {
+                                                                            "addressPrefix":  "10.0.0.0/24"
+                                                                        }
+                                                     }
+                                                 ]
+                                   },
+                       "publicIpAddressName1":  {
+                                                    "value":  "Keitavm-ip"
+                                                },
+                       "publicIpAddressType":  {
+                                                   "value":  "Static"
+                                               },
+                       "publicIpAddressSku":  {
+                                                  "value":  "Standard"
+                                              },
+                       "pipDeleteOption":  {
+                                               "value":  "Detach"
+                                           },
+                       "virtualMachineName":  {
+                                                  "value":  "Keitavm"
+                                              },
+                       "virtualMachineName1":  {
+                                                   "value":  "Keitavm"
+                                               },
+                       "virtualMachineComputerName1":  {
+                                                           "value":  "Keitavm"
+                                                       },
+                       "virtualMachineRG":  {
+                                                "value":  "Keita"
+                                            },
+                       "osDiskType":  {
+                                          "value":  "Premium_LRS"
+                                      },
+                       "osDiskDeleteOption":  {
+                                                  "value":  "Delete"
+                                              },
+                       "virtualMachineSize":  {
+                                                  "value":  "Standard_E2s_v3"
+                                              },
+                       "nicDeleteOption":  {
+                                               "value":  "Detach"
+                                           },
+                       "hibernationEnabled":  {
+                                                  "value":  false
+                                              },
+                       "adminUsername":  {
+                                             "value":  "Saranmadykeita"
+                                         },
+                       "adminPassword":  {
+                                             "value":  "string"
+                                         },
+                       "patchMode":  {
+                                         "value":  "AutomaticByOS"
+                                     },
+                       "enablePeriodicAssessment":  {
+                                                        "value":  "ImageDefault"
+                                                    },
+                       "enableHotpatching":  {
+                                                 "value":  false
+                                             },
+                       "customData":  {
+                                          "value":  "IyBFbmFibGUgSUlTDQpJbnN0YWxsLVdpbmRvd3NGZWF0dXJlIC1OYW1lIFdlYi1TZXJ2ZXIgLUluY2x1ZGVNYW5hZ2VtZW50VG9vbHMNCg0KIyBEb3dubG9hZCBhbmQgaW5zdGFsbCAuTkVUIDkgSG9zdGluZyBCdW5kbGUNCiRidW5kbGVVcmwgPSAiaHR0cHM6Ly9idWlsZHMuZG90bmV0Lm1pY3Jvc29mdC5jb20vZG90bmV0L2FzcG5ldGNvcmUvUnVudGltZS85LjAuOS9kb3RuZXQtaG9zdGluZy05LjAuOS13aW4uZXhlIg0KJGluc3RhbGxlciA9ICIkZW52OlRFTVBcZG90bmV0LWhvc3RpbmcuZXhlIg0KSW52b2tlLVdlYlJlcXVlc3QgLVVyaSAkYnVuZGxlVXJsIC1PdXRGaWxlICRpbnN0YWxsZXINClN0YXJ0LVByb2Nlc3MgLUZpbGVQYXRoICRpbnN0YWxsZXIgLUFyZ3VtZW50TGlzdCAiL3F1aWV0IiwgIi9ub3Jlc3RhcnQiIC1XYWl0DQoNCiMgT3B0aW9uYWw6IEluc3RhbGwgVmlzdWFsIEMrKyBSZWRpc3RyaWJ1dGFibGUNCiR2Y1VybCA9ICJodHRwczovL2FrYS5tcy92cy8xNy9yZWxlYXNlL3ZjX3JlZGlzdC54NjQuZXhlIg0KJHZjSW5zdGFsbGVyID0gIiRlbnY6VEVNUFx2Y19yZWRpc3QuZXhlIg0KSW52b2tlLVdlYlJlcXVlc3QgLVVyaSAkdmNVcmwgLU91dEZpbGUgJHZjSW5zdGFsbGVyDQpTdGFydC1Qcm9jZXNzIC1GaWxlUGF0aCAkdmNJbnN0YWxsZXIgLUFyZ3VtZW50TGlzdCAiL3F1aWV0IiwgIi9ub3Jlc3RhcnQiIC1XYWl0DQoNCiMgRGVwbG95IHlvdXIgYXBwDQokcGF0ID0gIkNTWXZ3WE5mbUFJSzdlUGk3RzdSTmVNQWk0UjVVZzJaVW9pYU1WRFZFc2V1bWxsNGFnQUNKUVFKOTlCSUFDQUFBQUFBQUFBQUFBQVNBWkRPMmR4diINCiRiYXNlNjRBdXRoSW5mbyA9IFtDb252ZXJ0XTo6VG9CYXNlNjRTdHJpbmcoW1RleHQuRW5jb2RpbmddOjpBU0NJSS5HZXRCeXRlcygiOiRwYXQiKSkNCiRoZWFkZXJzID0gQHsNCiAgICBBdXRob3JpemF0aW9uID0gIkJhc2ljICRiYXNlNjRBdXRoSW5mbyINCn0NCiRhcHBQYXRoID0gIkM6XGluZXRwdWJcd3d3cm9vdFxNeUFwcCINCk5ldy1JdGVtIC1JdGVtVHlwZSBEaXJlY3RvcnkgLVBhdGggJGFwcFBhdGggLUZvcmNlDQpJbnZva2UtV2ViUmVxdWVzdCAtVXJpICJodHRwczovL2Rldi5henVyZS5jb20vc2FyYW5tYWR5a2VpdGE4NC9fYXBpcy9yZXNvdXJjZXMvQ29udGFpbmVycy83MTg0MDQ2OS9EZXZvaXIxLXdpbi14NjQ/aXRlbVBhdGg9RGV2b2lyMS13aW4teDY0JTJGV2ViQXBwbGljYXRpb24xLnppcCIgLUhlYWRlcnMgJGhlYWRlcnMgLU91dEZpbGUgIiRlbnY6VEVNUFxNeUFwcC56aXAiDQpFeHBhbmQtQXJjaGl2ZSAiJGVudjpURU1QXE15QXBwLnppcCIgLURlc3RpbmF0aW9uUGF0aCAkYXBwUGF0aCAtRm9yY2UNCkV4cGFuZC1BcmNoaXZlICIkYXBwUGF0aFxBc3BXZWJBcHAtd2luLXg2NFxBc3AgV2ViIEFwcC56aXAiIC1EZXN0aW5hdGlvblBhdGggJGFwcFBhdGggLUZvcmNlDQoNCiMgUmVtb3ZlIERlZmF1bHQgV2ViIFNpdGUgaWYgaXQgZXhpc3RzDQppZiAoVGVzdC1QYXRoICJJSVM6XFNpdGVzXERlZmF1bHQgV2ViIFNpdGUiKSB7DQogICAgUmVtb3ZlLVdlYlNpdGUgLU5hbWUgIkRlZmF1bHQgV2ViIFNpdGUiDQogICAgV3JpdGUtSG9zdCAi8J+nuSBSZW1vdmVkIERlZmF1bHQgV2ViIFNpdGUiDQp9DQoNCiMgQ29uZmlndXJlIElJUyBzaXRlDQpJbXBvcnQtTW9kdWxlIFdlYkFkbWluaXN0cmF0aW9uDQpOZXctV2ViU2l0ZSAtTmFtZSAiTXlBcHAiIC1Qb3J0IDgwIC1QaHlzaWNhbFBhdGggJGFwcFBhdGggLUZvcmNlDQpTdGFydC1XZWJTaXRlIC1OYW1lICJNeUFwcCINCldyaXRlLUhvc3QgIvCfmoAgTXlBcHAgc2l0ZSBkZXBsb3llZCBhbmQgc3RhcnRlZCBzdWNjZXNzZnVsbHkiDQo="
+                                      },
+                       "virtualMachine1Zone":  {
+                                                   "value":  "1"
+                                               }
+                   }
+}

@@ -1,0 +1,124 @@
+# Starter pipeline
+trigger:
+- master
+
+pool: "default"
+
+variables:    
+- name: PAT
+  value: ''    
+- name: AzureSubscription
+  value: 'Azure subscription 1(17454606-09a9-4347-8fcd-4dbaf336304f)'
+- name: SubID
+  value: '17454606-09a9-4347-8fcd-4dbaf336304f'
+- name: RG_Location
+  value: 'Canada Central'
+- name: RG_location
+  value: 'canadacentral'
+- name: Keita
+  value: 'Keita'
+- name: InfrastructureFolder
+  value: 'Devoir1'
+- name: VMname
+  value: 'Keita'
+- name: buildConfiguration
+  value: 'Release'
+- name: artifactName
+  value: 'Devoir1-win-x64'
+
+steps:
+
+# �tape 1 : R�cup�rer le dernier build (optionnel)
+- powershell: |
+    $pat = "$(PAT)"
+    $base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(":$pat"))
+    $headers = @{ Authorization = "Basic $base64AuthInfo" }
+
+    Write-Host "Using PAT for authentication"
+
+    $org = "Saranmadykeita84"
+    $project = "Devoir1"
+
+    $project = [System.Uri]::EscapeDataString($project)
+    $url = "https://dev.azure.com/$org/$project/_apis/build/builds?api-version=7.1-preview.7"
+
+    $response = Invoke-RestMethod -Uri $url -Headers $headers -Method Get
+
+    if ($response.value.Count -gt 0) {
+      $latestBuildId = $response.value[0].id
+      Write-Host "? Latest Build ID: $latestBuildId"
+      Write-Host "##vso[task.setvariable variable=LatestBuildId;isOutput=true]$latestBuildId"
+    } else {
+      Write-Host "? No builds found"
+    }
+  name: GetBuildId
+  env:
+    PAT: $(PAT)
+  displayName: 'Get Latest Build Info with PAT'
+
+# �tape 2 : Compiler le projet
+- task: DotNetCoreCLI@2
+  displayName: 'Build project'
+  inputs:
+    command: 'build'
+    projects: '**/WebApplication1.csproj'
+    arguments: '--configuration $(buildConfiguration)'
+
+# �tape 3 : Publier l�application
+- task: DotNetCoreCLI@2
+  displayName: 'Publish project'
+  inputs:
+    command: 'publish'
+    projects: '**/WebApplication1.csproj'
+    arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/publish'
+
+# �tape 4 : Cr�er un artifact
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/publish'
+    ArtifactName: '$(artifactName)'
+    publishLocation: 'Container'
+
+# �tape 5 : R�cup�rer l�URL de l�artifact
+- powershell: |
+    $pat = "$(PAT)"
+    $base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(":$pat"))
+    $headers = @{ Authorization = "Basic $base64AuthInfo" }
+
+    $org = "Saranmadykeita84"
+    $project = "Devoir1"
+    $buildId = "$(Build.BuildId)"   # ?? j�ai remplac� par l�ID du build courant
+
+    $project = [System.Uri]::EscapeDataString($project)
+    $url = "https://dev.azure.com/$org/$project/_apis/build/builds/$buildId/artifacts?api-version=7.1-preview.5"
+
+    $response = Invoke-RestMethod -Uri $url -Headers $headers -Method Get
+    $targetArtifact = $response.value | Where-Object { $_.name -eq "$(artifactName)" }
+
+    if ($null -ne $targetArtifact) {
+      $downloadUrl = $targetArtifact.resource.downloadUrl
+      Write-Host "? Found Artifact URL: $downloadUrl"
+      Write-Host "##vso[task.setvariable variable=WinArtifactUrl;isOutput=true]$downloadUrl"
+    } else {
+      Write-Host "? Artifact '$(artifactName)' not found."
+    }
+  name: GetArtifactUrl
+  env:
+    PAT: $(PAT)
+  displayName: 'Extract Artifact URL'
+
+
+- task: AzureResourceManagerTemplateDeployment@3
+  inputs:
+    deploymentScope: 'Resource Group'
+    azureResourceManagerConnection: 'Azure subscription 1(17454606-09a9-4347-8fcd-4dbaf336304f)'
+    subscriptionId: '17454606-09a9-4347-8fcd-4dbaf336304f'
+    action: 'Create Or Update Resource Group'
+    resourceGroupName: 'Keita'
+    location: 'Canada Central'
+    templateLocation: 'Linked artifact'  
+    csmFile: '$(Build.SourcesDirectory)/projectinfraVM/azuredeploy.json'
+    csmParametersFile: '$(Build.SourcesDirectory)/projectinfraVM/azuredeploy.parameters.json'
+    overrideParameters: '-adminPassword "$(adminPassword)"'
+    deploymentMode: 'Incremental'
